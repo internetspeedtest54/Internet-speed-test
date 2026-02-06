@@ -1,2 +1,0 @@
-# Internet-speed-test
-Test

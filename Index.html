@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Internet Speed Test</title>
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.container{
+    text-align:center;
+}
+.logo{
+    font-size:48px;
+    font-weight:bold;
+    color:#e50914;
+    margin-bottom:20px;
+}
+.text{
+    font-size:18px;
+}
+.speed{
+    font-size:90px;
+    font-weight:bold;
+}
+.unit{
+    font-size:22px;
+    margin-top:-10px;
+}
+.loader{
+    margin:20px auto;
+    width:50px;
+    height:50px;
+    border:6px solid #ddd;
+    border-top:6px solid #e50914;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    display:none;
+}
+button{
+    padding:12px 30px;
+    font-size:16px;
+    border:none;
+    background:#e50914;
+    color:white;
+    cursor:pointer;
+    border-radius:4px;
+}
+@keyframes spin{
+    0%{transform:rotate(0deg);}
+    100%{transform:rotate(360deg);}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo">FAST</div>
+    <div class="text">Your Internet speed is</div>
+    <div class="speed" id="speed">0</div>
+    <div class="unit">Mbps</div>
+    <div class="loader" id="loader"></div>
+    <button onclick="startTest()">Test Speed</button>
+</div>
+
+<script>
+async function startTest(){
+    const speedEl = document.getElementById("speed");
+    const loader = document.getElementById("loader");
+    speedEl.innerText = "0";
+    loader.style.display = "block";
+
+    // test file (public & fast)
+    const url = "https://speed.hetzner.de/10MB.bin";
+    const startTime = performance.now();
+
+    try{
+        const response = await fetch(url, {cache:"no-store"});
+        const data = await response.blob();
+        const endTime = performance.now();
+
+        const duration = (endTime - startTime) / 1000; // seconds
+        const bitsLoaded = data.size * 8;
+        const speedMbps = (bitsLoaded / duration / 1024 / 1024).toFixed(1);
+
+        speedEl.innerText = speedMbps;
+    }catch(e){
+        speedEl.innerText = "Error";
+    }
+
+    loader.style.display = "none";
+}
+</script>
+
+</body>
+</html>
